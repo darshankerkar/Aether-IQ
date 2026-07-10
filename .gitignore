@@ -23,7 +23,7 @@ build/
 # =========================
 # Data & Outputs
 # =========================
-*.csv
+
 *.parquet
 *.json
 !**/sample_data/**
