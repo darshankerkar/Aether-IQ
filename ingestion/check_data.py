@@ -1,0 +1,15 @@
+import pandas as pd
+
+df = pd.read_csv("india_aqi_checkpoint.csv")
+print("Checkpoint rows    :", f"{len(df):,}")
+print("Unique stations    :", df["location"].nunique())
+print("Unique sensor_ids  :", df["sensor_id"].nunique())
+print("Parameters         :", sorted(df["parameter"].unique()))
+print("Date range         :", df["timestamp"].min(), "to", df["timestamp"].max())
+print("Columns            :", list(df.columns))
+print()
+print("Rows per parameter:")
+print(df.groupby("parameter").size().to_string())
+print()
+print("Top 10 states/cities by station count:")
+print(df.drop_duplicates("location")["location"].str.split("-").str[-1].str.strip().value_counts().head(10).to_string())
