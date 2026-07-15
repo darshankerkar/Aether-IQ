@@ -99,13 +99,13 @@ class ForecastingAgent:
         for i, key in enumerate(TARGET_SHIFT.keys()):
             rmse = np.sqrt(mean_squared_error(Y_te[:, i], Y_pred[:, i]))
             self.rmse[key] = round(rmse, 2)
-            print(f"  Forecast RMSE [{key}]: {rmse:.2f} µg/m³")
+            print(f"  Forecast RMSE [{key}]: {rmse:.2f} ug/m3")
 
         self.model          = model
         self.available_feats = available_features
         joblib.dump({'model': model, 'feats': available_features, 'rmse': self.rmse},
                     self.model_path)
-        print(f"  Model saved → {self.model_path}")
+        print(f"  Model saved -> {self.model_path}")
 
     def _build_synthetic_model(self):
         """Fallback model if CSV not available."""
