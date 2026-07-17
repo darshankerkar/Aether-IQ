@@ -161,12 +161,13 @@ class AttributionAgent:
         if station_name in self._station_cache:
             return {'station': station_name, **self._station_cache[station_name]}
 
-        # Fuzzy match
-        if self.df is not None:
-            key = station_name.split('-')[0].strip()
-            for loc in self._station_cache:
-                if key.lower() in loc.lower():
-                    return {'station': station_name, **self._station_cache[loc]}
+        # Robust fuzzy match using difflib — works for names with or without hyphens
+        if self._station_cache:
+            from difflib import get_close_matches
+            keys = list(self._station_cache.keys())
+            matches = get_close_matches(station_name, keys, n=1, cutoff=0.4)
+            if matches:
+                return {'station': station_name, **self._station_cache[matches[0]]}
 
         return {'station': station_name, **self._default_attribution()}
 

@@ -200,32 +200,6 @@ if source in dominant:
 
 ---
 
-### BUG-07 🟡 `AttributionAgent` fuzzy match splits on `'-'` — fails for station names without hyphens
-
-**File:** `agents/attribution.py` — Lines 164–169
-
-**Root Cause:**
-```python
-key = station_name.split('-')[0].strip()
-for loc in self._station_cache:
-    if key.lower() in loc.lower():
-```
-If station name is `"Anand Vihar"` (no hyphen), `split('-')[0]` returns the full string unchanged — the match only works if that exact full string is a substring of a cached key. Many stations fall back to `_default_attribution()` silently.
-
-**Fix:**
-```python
-from difflib import get_close_matches
-
-def attribute(self, station_name: str) -> dict:
-    if station_name in self._station_cache:
-        return {'station': station_name, **self._station_cache[station_name]}
-    # Robust fuzzy match
-    keys = list(self._station_cache.keys())
-    matches = get_close_matches(station_name, keys, n=1, cutoff=0.4)
-    if matches:
-        return {'station': station_name, **self._station_cache[matches[0]]}
-    return {'station': station_name, **self._default_attribution()}
-```
 
 ---
 
